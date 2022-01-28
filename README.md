@@ -6,6 +6,20 @@ or when the standard installers are not functioning as expected.
 
 ## Usage
 
+### First-time setup
+
+If you are downloading the source or a release from GitHub, you will need
+to follow these setup instructions before using the software.
+
+1. Download the [latest release](https://github.com/yeenbean/ODT-Builder/releases)
+of ODT Builder and extract the archive.
+1. Download the standalone version of 7-zip from
+[here](https://www.7-zip.org/a/7z2107-extra.7z). Extract the three files from
+the "x64" directory to the same folder as Build.ps1.
+2. Download and install
+[Microsoft's ODT tool](https://www.microsoft.com/en-us/download/details.aspx?id=49117).
+Run the installer and install to the same directory as Build.ps1.
+
 ### Creating offline installers
 
 1. Extract ODT Builder into its own directory.
