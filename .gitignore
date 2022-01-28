@@ -1,0 +1,9 @@
+build/
+build/*
+Office/
+build.bat
+setup.exe
+7za.dll
+7za.exe
+7zxa.dll
+deploy.bat

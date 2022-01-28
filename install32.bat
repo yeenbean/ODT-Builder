@@ -1,0 +1,1 @@
+.\setup.exe /configure .\business-x86.xml
