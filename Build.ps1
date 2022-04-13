@@ -15,7 +15,8 @@ function Show-OdtMenu
 
 
 # Cleanup function. This deletes all unfinalized and downloaded files from ODT.
-# Cleanup does *not* delete supportive files, like ODT itself or 7zip, or any successful builds.
+# Cleanup does *not* delete supportive files, like ODT itself or 7zip, or any
+# successful builds.
 function Remove-Cache
 {
     Write-Host "Cleaning up..."
@@ -53,7 +54,7 @@ function New-Build
 
     # Download packages using ODT.
     Write-Host "Downloading packages. Please wait..."
-    .\setup.exe /download .\business-$arch.xml
+    .\setup.exe /download .\lib\business-$arch.xml
 
     # Remove and recreate build directory
     Write-Host "Creating build directory..."
@@ -63,8 +64,8 @@ function New-Build
     # Copy over library files
     Write-Host "Copying helper files..."
     Copy-Item ".\setup.exe" -Destination ".\build$bits\setup.exe"
-    Copy-Item ".\business-$arch.xml" -Destination ".\build$bits\business-$arch.xml"
-    Copy-Item ".\install$bits.bat" -Destination ".\build$bits\install.bat"
+    Copy-Item ".\lib\business-$arch.xml" -Destination ".\build$bits\business-$arch.xml"
+    Copy-Item ".\lib\install$bits.bat" -Destination ".\build$bits\install.bat"
 
     # Move over downloaded packages
     Write-Host "Moving downloaded files from ODT..."
