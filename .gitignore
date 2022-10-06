@@ -6,8 +6,8 @@ setup.exe
 7za.dll
 7za.exe
 7zxa.dll
-deploy.bat
 configuration-Office365-x64.xml
 configuration-Office365-x86.xml
 configuration-Office2019Enterprise.xml
 configuration-Office2021Enterprise.xml
+distribution.zip
