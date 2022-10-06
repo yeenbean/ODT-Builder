@@ -26,7 +26,7 @@ function Remove-Cache
 }
 
 
-# Build 32-bit Apps for business package.
+# Build package
 function New-Build
 {
     [CmdletBinding()]
