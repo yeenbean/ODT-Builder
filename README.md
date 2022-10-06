@@ -42,7 +42,7 @@ process.
 
 ## TODO
 
-- [ ] Move support files to a subdirectory to clean up root.
+- [x] Move support files to a subdirectory to clean up root.
 - [ ] Modify build directory names.
 - [ ] Add alternative versions of Office, including Apps for enterprise, Office
 LTSC versions, and other volume licensed versions.
@@ -57,6 +57,12 @@ embedding a license key, disabling automatic updates, update channel, etc.
 
 All versions are tested before they are published, including installation of
 Office in a virtual environment.
+
+### 2022.08.15
+
+- Updated readme TODO list.
+- Added a `create-release.bat` script to create portable versions.
+- Updated `.gitignore` to avoid weirdness with extracted files from ODT.
 
 ### 2022.01.28
 
