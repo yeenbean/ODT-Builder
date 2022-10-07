@@ -1,16 +1,51 @@
-﻿# Main menu
-function Show-OdtMenu
+﻿[CmdletBinding()]
+param (
+    [Parameter()]
+    [switch]
+    $EnableDebugger
+)
+
+if ($EnableDebugger) {
+    $DebugPreference = "Continue"
+}
+
+Write-Debug "Script launched"
+
+# Main menu
+function Show-Menu
 {
-    Clear-Host
-    Write-Host "╔════════════════════════════════════════════╗"
-    Write-Host "║ Offline Installer Creation Wizard          ║"
-    Write-Host "╟────────────────────────────────────────────╢"
-    Write-Host "║ 1. Create 32-bit Apps for business         ║"
-    Write-Host "║ 2. Create 64-bit Apps for business         ║"
-    Write-Host "║ 3. Create 32- and 64-bit Apps for business ║"
-    Write-Host "║ 4. Cleanup                                 ║"
-    Write-Host "╚════════════════════════════════════════════╝"
-    Write-Host
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [string]
+        $menu
+    )
+
+    switch ($menu) {
+        "main" {
+            if (-Not $EnableDebugger) {Clear-Host}
+            Write-Host "╔════════════════════════════════════════════╗"
+            Write-Host "║ Microsoft 365 ODT Wizard                   ║"
+            Write-Host "╟────────────────────────────────────────────╢"
+            Write-Host "║ 1. Microsoft 365 Apps for business         ║"
+            Write-Host "║ 2. Cleanup                                 ║"
+            Write-Host "╚════════════════════════════════════════════╝"
+            Write-Host
+        }
+        "bits" {
+            Write-Host "Would you like to download a 32 bit or 64 bit package?"
+            Write-Host "1: 32-bit"
+            Write-Host "2: 64-bit"
+            Write-Host
+        }
+        "install" {
+            Write-Host "Is this the target machine?"
+            Write-Host "1: Yes"
+            Write-Host "2: No (create a portable archive)"
+            Write-Host
+        }
+        Default {}
+    }
 }
 
 
@@ -33,19 +68,27 @@ function New-Build
     param (
         [Parameter()]
         [string]
-        $bits
+        $bits,
+        [Parameter()]
+        [switch]
+        $install
     )
 
     # Init variables
     $arch = "x86"
+    if ($install) {
+        Write-Debug "Install switch was passed."
+    }
 
     # Validate bits
     switch ($bits) {
         "32" {
             $arch = "x86"
+            Write-Debug "32-bit build"
         }
         "64" {
             $arch = "x64"
+            Write-Debug "64-bit build"
         }
         default {
             Throw "Invalid architecture."
@@ -56,50 +99,82 @@ function New-Build
     Write-Host "Downloading packages. Please wait..."
     .\setup.exe /download .\lib\business-$arch.xml
 
-    # Remove and recreate build directory
-    Write-Host "Creating build directory..."
-    Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build$bits
-    New-Item -Name "build$bits" -ItemType "directory"
+    # Install or compile
+    if ($install) {
+        Write-Debug "Installation step reached."
+        .\setup.exe /configure .\lib\business-$arch.xml
+    }
+    else {
+        # Remove and recreate build directory
+        Write-Host "Creating build directory..."
+        Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build$bits
+        New-Item -Name "build$bits" -ItemType "directory"
 
-    # Copy over library files
-    Write-Host "Copying helper files..."
-    Copy-Item ".\setup.exe" -Destination ".\build$bits\setup.exe"
-    Copy-Item ".\lib\business-$arch.xml" -Destination ".\build$bits\business-$arch.xml"
-    Copy-Item ".\lib\install$bits.bat" -Destination ".\build$bits\install.bat"
+        # Copy over library files
+        Write-Host "Copying helper files..."
+        Copy-Item ".\setup.exe" -Destination ".\build$bits\setup.exe"
+        Copy-Item ".\lib\business-$arch.xml" -Destination ".\build$bits\business-$arch.xml"
+        Copy-Item ".\lib\install$bits.bat" -Destination ".\build$bits\install.bat"
 
-    # Move over downloaded packages
-    Write-Host "Moving downloaded files from ODT..."
-    Move-Item ".\Office" -Destination ".\build$bits\Office"
+        # Move over downloaded packages
+        Write-Host "Moving downloaded files from ODT..."
+        Move-Item ".\Office" -Destination ".\build$bits\Office"
 
-    # Compile archive
-    Write-Host "Creating build archive..."
-    Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build\office$arch.zip    #remove previous build if it exists
-    .\7za a -r build\office$arch.zip build$bits
-
-    # Cleanup
+        # Compile archive
+        Write-Debug "Build step reached."
+        Write-Host "Creating build archive..."
+        Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build\office$arch.zip    #remove previous build if it exists
+        .\7za a -r build\office$arch.zip build$bits
+    }
     Remove-Cache
 }
 
 
 # Main process
-while ($true)
+:top while ($true)
 {
-    Show-OdtMenu
-    $choice = Read-Host "Pick a number...any number"
-    Write-Host
+    Show-Menu -menu main
+    $choice = Read-Host "> "
 
     switch ($choice) {
         '1' {
-            New-Build -bits "32"
+            # 365 Apps for business
+            Show-Menu -menu bits
+            switch (Read-Host "> ") {
+                '1' {
+                    # 32 bit 365 Apps for business
+                    Show-Menu -menu install
+                    switch (Read-Host "> ") {
+                        '1' {
+                            # Install 32 bit 365 Apps for business
+                            New-Build -bits 32 -install
+                        }
+                        '2' {
+                            # Create portable archive of 32 bit 365 Apps for business
+                            New-Build -bits 32
+                        }
+                        Default {continue}
+                    }
+                }
+                '2' {
+                    # 64 bit 365 Apps for business
+                    Show-Menu -menu install
+                    switch (Read-Host "> ") {
+                        '1' {
+                            # Install 64 bit 365 Apps for business
+                            New-Build -bits 64 -install
+                        }
+                        '2' {
+                            # Create portable archive of 64 bit 365 Apps for business
+                            New-Build -bits 64
+                        }
+                        Default {}
+                    }
+                }
+                Default {continue}
+            }
         }
         '2' {
-            New-Build -bits "64"
-        }
-        '3' {
-            New-Build -bits "32"
-            New-Build -bits "64"
-        }
-        '4' {
             Remove-Cache
         }
         Default {}
