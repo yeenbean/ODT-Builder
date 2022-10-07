@@ -58,6 +58,12 @@ embedding a license key, disabling automatic updates, update channel, etc.
 All versions are tested before they are published, including installation of
 Office in a virtual environment.
 
+### 2022.10.06
+
+- `create-release.bat` never made it into August's commit. It is now uploaded.
+- Created `run.bat` script which automatically bypasses execution policy. This
+makes the script easier to execute on modern Windows operating systems.
+
 ### 2022.08.15
 
 - Updated readme TODO list.
