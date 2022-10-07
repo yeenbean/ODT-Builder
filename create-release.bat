@@ -12,4 +12,4 @@ REM The output file will always be .\distribution.zip.  This script will not
 REM check if the previous file was deleted, and may fail if it is not moved or
 REM deleted first!
 
-.\7za a -r distribution.zip lib\ 7za.dll 7za.exe 7zxa.dll Build.ps1 setup.exe
+.\7za a -r distribution.zip lib\ 7za.dll 7za.exe 7zxa.dll Build.ps1 setup.exe run.bat
