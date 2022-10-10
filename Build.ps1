@@ -126,7 +126,6 @@ function New-Build
         Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build\office$arch.zip    #remove previous build if it exists
         .\7za a -r build\office$arch.zip build$bits
     }
-    Remove-Cache
 }
 
 
