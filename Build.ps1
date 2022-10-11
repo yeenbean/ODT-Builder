@@ -105,28 +105,28 @@ function New-Build
     Write-Host "Downloading packages. Please wait..."
     .\setup.exe /download .\lib\$version-$arch.xml
 
+    # Remove and recreate build directory
+    Write-Host "Creating build directory..."
+    Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build\$version-$arch
+    New-Item -Name "build\$version-$arch" -ItemType "directory"
+
+    # Copy over library files
+    Write-Host "Copying helper files..."
+    Copy-Item ".\setup.exe" -Destination ".\build\$version-$arch\setup.exe"
+    Copy-Item ".\lib\$version-$arch.xml" -Destination ".\build\$version-$arch\$version-$arch.xml"
+    #Copy-Item ".\lib\$version-$arch.bat" -Destination ".\build\$version-$arch\install.bat"
+    Write-Host .\setup.exe /configure .\$version-$arch.xml > .\build\$version-$arch\install.bat
+
+    # Move over downloaded packages
+    Write-Host "Moving downloaded files from ODT..."
+    Move-Item ".\Office" -Destination ".\build\$version-$arch\Office"
+
     # Install or compile
     if ($install) {
         Write-Debug "Installation step reached."
-        .\setup.exe /configure .\lib\$version-$arch.xml
+        Start-Process -FilePath ".\setup.exe" -WorkingDirectory ".\build\$version-$arch" -ArgumentList "/configure .\$version-$arch.xml"
     }
     else {
-        # Remove and recreate build directory
-        Write-Host "Creating build directory..."
-        Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build\$version-$arch
-        New-Item -Name "build\$version-$arch" -ItemType "directory"
-
-        # Copy over library files
-        Write-Host "Copying helper files..."
-        Copy-Item ".\setup.exe" -Destination ".\build\$version-$arch\setup.exe"
-        Copy-Item ".\lib\$version-$arch.xml" -Destination ".\build\$version-$arch\$version-$arch.xml"
-        #Copy-Item ".\lib\$version-$arch.bat" -Destination ".\build\$version-$arch\install.bat"
-        Write-Host .\setup.exe /configure .\$version-$arch.xml > .\build\$version-$arch\install.bat
-
-        # Move over downloaded packages
-        Write-Host "Moving downloaded files from ODT..."
-        Move-Item ".\Office" -Destination ".\build\$version-$arch\Office"
-
         # Compile archive
         Write-Debug "Build step reached."
         Write-Host "Creating build archive..."
@@ -139,50 +139,51 @@ function New-Build
 # Main process
 :top while ($true)
 {
-    Show-Menu -menu main
-    $choice = Read-Host "> "
+    # Declare variables.
+    $version = "not selected"
+    $bits = 0
+    $install = $false
 
-    switch ($choice) {
+    # Main menu.
+    Write-Debug "Top menu."
+    Show-Menu -menu main
+    switch (Read-Host "> ") {
         '1' {
-            # 365 Apps for business
-            Show-Menu -menu bits
-            switch (Read-Host "> ") {
-                '1' {
-                    # 32 bit 365 Apps for business
-                    Show-Menu -menu install
-                    switch (Read-Host "> ") {
-                        '1' {
-                            # Install 32 bit 365 Apps for business
-                            New-Build -bits 32 -version business -install
-                        }
-                        '2' {
-                            # Create portable archive of 32 bit 365 Apps for business
-                            New-Build -bits 32 -version business
-                        }
-                        Default {continue}
-                    }
-                }
-                '2' {
-                    # 64 bit 365 Apps for business
-                    Show-Menu -menu install
-                    switch (Read-Host "> ") {
-                        '1' {
-                            # Install 64 bit 365 Apps for business
-                            New-Build -bits 64 -version business -install
-                        }
-                        '2' {
-                            # Create portable archive of 64 bit 365 Apps for business
-                            New-Build -bits 64 -version business
-                        }
-                        Default {}
-                    }
-                }
-                Default {continue}
-            }
+            $version = "business"
         }
         '2' {
             Remove-Cache
+            Continue
         }
-        Default {}
+        Default {Continue}
     }
+
+    # Select architecture
+    Write-Debug "Arch menu"
+    Show-Menu -menu bits
+    switch (Read-Host "> ") {
+        '1' {
+            $bits = 32
+        }
+        '2' {
+            $bits = 64
+        }
+        Default {Continue}
+    }
+
+    # Select whether to build or install
+    Show-Menu -menu install
+    switch (Read-Host) {
+        '1' {
+            $install = $true
+        }
+        '2' {
+            $install = $false
+        }
+        Default {Continue}
+    }
+
+    # Run build tool
+    if ($install) {New-Build -version $version -bits $bits -install}
+    else {New-Build -version $version -bits $bits}
 }
