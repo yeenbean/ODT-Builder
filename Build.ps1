@@ -70,6 +70,9 @@ function New-Build
         [string]
         $bits,
         [Parameter()]
+        [string]
+        $version,
+        [Parameter()]
         [switch]
         $install
     )
@@ -95,36 +98,40 @@ function New-Build
         }
     }
 
+    # Ask to clear cache if previous build detected
+    
+
     # Download packages using ODT.
     Write-Host "Downloading packages. Please wait..."
-    .\setup.exe /download .\lib\business-$arch.xml
+    .\setup.exe /download .\lib\$version-$arch.xml
 
     # Install or compile
     if ($install) {
         Write-Debug "Installation step reached."
-        .\setup.exe /configure .\lib\business-$arch.xml
+        .\setup.exe /configure .\lib\$version-$arch.xml
     }
     else {
         # Remove and recreate build directory
         Write-Host "Creating build directory..."
-        Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build$bits
-        New-Item -Name "build$bits" -ItemType "directory"
+        Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build\$version-$arch
+        New-Item -Name "build\$version-$arch" -ItemType "directory"
 
         # Copy over library files
         Write-Host "Copying helper files..."
-        Copy-Item ".\setup.exe" -Destination ".\build$bits\setup.exe"
-        Copy-Item ".\lib\business-$arch.xml" -Destination ".\build$bits\business-$arch.xml"
-        Copy-Item ".\lib\install$bits.bat" -Destination ".\build$bits\install.bat"
+        Copy-Item ".\setup.exe" -Destination ".\build\$version-$arch\setup.exe"
+        Copy-Item ".\lib\$version-$arch.xml" -Destination ".\build\$version-$arch\$version-$arch.xml"
+        #Copy-Item ".\lib\$version-$arch.bat" -Destination ".\build\$version-$arch\install.bat"
+        Write-Host .\setup.exe /configure .\$version-$arch.xml > .\build\$version-$arch\install.bat
 
         # Move over downloaded packages
         Write-Host "Moving downloaded files from ODT..."
-        Move-Item ".\Office" -Destination ".\build$bits\Office"
+        Move-Item ".\Office" -Destination ".\build\$version-$arch\Office"
 
         # Compile archive
         Write-Debug "Build step reached."
         Write-Host "Creating build archive..."
         Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build\office$arch.zip    #remove previous build if it exists
-        .\7za a -r build\office$arch.zip build$bits
+        .\7za a -r build\$version-$arch.zip build\$version-$arch
     }
 }
 
@@ -146,11 +153,11 @@ function New-Build
                     switch (Read-Host "> ") {
                         '1' {
                             # Install 32 bit 365 Apps for business
-                            New-Build -bits 32 -install
+                            New-Build -bits 32 -version business -install
                         }
                         '2' {
                             # Create portable archive of 32 bit 365 Apps for business
-                            New-Build -bits 32
+                            New-Build -bits 32 -version business
                         }
                         Default {continue}
                     }
@@ -161,11 +168,11 @@ function New-Build
                     switch (Read-Host "> ") {
                         '1' {
                             # Install 64 bit 365 Apps for business
-                            New-Build -bits 64 -install
+                            New-Build -bits 64 -version business -install
                         }
                         '2' {
                             # Create portable archive of 64 bit 365 Apps for business
-                            New-Build -bits 64
+                            New-Build -bits 64 -version business
                         }
                         Default {}
                     }
