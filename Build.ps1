@@ -123,7 +123,9 @@ function New-Build
     Copy-Item ".\setup.exe" -Destination ".\build\$version-$arch\setup.exe"
     Copy-Item ".\lib\$version-$arch.xml" -Destination ".\build\$version-$arch\$version-$arch.xml"
     #Copy-Item ".\lib\$version-$arch.bat" -Destination ".\build\$version-$arch\install.bat"
-    Write-Output ".\setup.exe /configure .\$version-$arch.xml" > .\build\$version-$arch\install.bat
+    $batContent = ".\setup.exe /configure .\$version-$arch.xml"
+    $batFile = ".\build\$version-$arch\install.bat"
+    [IO.File]::WriteAllLines($batFile, $batContent)
 
     # Move over downloaded packages
     Write-Host "Moving downloaded files from ODT..."
