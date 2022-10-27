@@ -154,9 +154,9 @@ function New-Build
         }
         '2' {
             Remove-Cache
-            Continue
+            Continue top
         }
-        Default {Continue}
+        Default {Continue top}
     }
 
     # Select architecture
@@ -169,7 +169,7 @@ function New-Build
         '2' {
             $bits = 64
         }
-        Default {Continue}
+        Default {Continue top}
     }
 
     # Select whether to build or install
@@ -181,7 +181,7 @@ function New-Build
         '2' {
             $install = $false
         }
-        Default {Continue}
+        Default {Continue top}
     }
 
     # Run build tool
