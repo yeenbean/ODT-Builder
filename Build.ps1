@@ -24,12 +24,19 @@ function Show-Menu
     switch ($menu) {
         "main" {
             if (-Not $EnableDebugger) {Clear-Host}
-            Write-Host "╔════════════════════════════════════════════╗"
-            Write-Host "║ Microsoft 365 ODT Wizard                   ║"
-            Write-Host "╟────────────────────────────────────────────╢"
-            Write-Host "║ 1. Microsoft 365 Apps for business         ║"
-            Write-Host "║ 2. Cleanup                                 ║"
-            Write-Host "╚════════════════════════════════════════════╝"
+            Write-Host "╔════════════════════════════════════════════════════════════════╗"
+            Write-Host "║ Microsoft 365 ODT Wizard                                       ║"
+            Write-Host "╟────────────────────────────────────────────────────────────────╢"
+            Write-Host "║ 1. Microsoft 365 Apps for business (business standard/premium) ║"
+            Write-Host "║ 2. Microsoft 365 Apps for enterprise (E3/E5)                   ║"
+            Write-Host "║ 3. Microsoft 365 Home Premium                                  ║"
+            Write-Host "╟────────────────────────────────────────────────────────────────╢"
+            Write-Host "║ 4. Outlook (business standard/premium)                         ║"
+            Write-Host "║ 5. Outlook (E3/E5)                                             ║"
+            Write-Host "╟────────────────────────────────────────────────────────────────╢"
+            Write-Host "║ 6. Custom (place in lib/custom.xml)                            ║"
+            Write-Host "║ 5. Cleanup                                                     ║"
+            Write-Host "╚════════════════════════════════════════════════════════════════╝"
             Write-Host
         }
         "bits" {
@@ -153,6 +160,24 @@ function New-Build
             $version = "business"
         }
         '2' {
+            $version = "enterprise"
+        }
+        '3' {
+            $version = "home"
+        }
+        '4' {
+            $version = "outlookbusiness"
+        }
+        '5' {
+            $version = "outlookenterprise"
+        }
+        '6' {
+            Write-Host "Feature not yet implemented."
+            Write-Host "Press enter to continue..."
+            Read-Host ""
+            Continue top
+        }
+        '7' {
             Remove-Cache
             Continue top
         }
