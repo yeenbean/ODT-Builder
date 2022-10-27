@@ -57,6 +57,7 @@ function Remove-Cache
     Write-Host "Cleaning up..."
     Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build32
     Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build64
+    Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\build
     Remove-Item -Recurse -Force -ErrorAction 'silentlycontinue' .\Office
 }
 
