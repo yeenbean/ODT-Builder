@@ -35,7 +35,7 @@ function Show-Menu
             Write-Host "║ 5. Outlook (E3/E5)                                             ║"
             Write-Host "╟────────────────────────────────────────────────────────────────╢"
             Write-Host "║ 6. Custom (place in lib/custom.xml)                            ║"
-            Write-Host "║ 5. Cleanup                                                     ║"
+            Write-Host "║ 7. Cleanup                                                     ║"
             Write-Host "╚════════════════════════════════════════════════════════════════╝"
             Write-Host
         }
