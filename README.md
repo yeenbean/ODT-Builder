@@ -23,18 +23,17 @@ Run the installer and install to the same directory as Build.ps1.
 ### Creating offline installers
 
 1. Extract ODT Builder into its own directory.
-2. Run `Build.ps1`. *You may have to change your PowerShell settings to allow
-execution of the script.*
-3. Choose one of the options from the main menu to start a build. You can build
-both versions simultaneously, or just one version.
-4. Let the build complete. You may not see any output during the download
-process.
-5. Deploy your installation to your target machine. See instructions below.
+2. Run `Build.ps1` or `run.bat`.
+3. Choose a version of Office from the main menu.
+4. Choose your architecture.
+5. Choose whether to build an archive, or to deploy to the current machine.
 
-### Installing from offline installer
+The script will then download the required files, then either install Office or
+create a zip archive which you can move to the target machine.
 
-1. Copy or upload the version of Office needed. 32 and 64 identify 32-bit and
-64-bit versions.
+### Installing from an archive
+
+1. Transfer the archive to the target machine.
 2. Extract the archive into it's own directory.
 3. Run `install.bat`. You'll see the familiar installation UI.
 4. ?????
@@ -43,20 +42,30 @@ process.
 ## TODO
 
 - [x] Move support files to a subdirectory to clean up root.
-- [ ] Modify build directory names.
-- [ ] Add alternative versions of Office, including Apps for enterprise, Office
+- [x] Modify build directory names.
+- [ ] Add additional versions of Office, including Apps for enterprise, Office
 LTSC versions, and other volume licensed versions.
-- [ ] Support custom configurations. This will help future-proof this script if
+- [x] Support custom configurations. This will help future-proof this script if
 it goes unmaintained, as well as supporting custom-made configs (i.e. from
 https://config.office.com/deploymentsettings)
-- [ ] Switches for automatically accepting the EULA, silent installation,
-embedding a license key, disabling automatic updates, update channel, etc.
 - [x] Rewrite in PowerShell.
 
 ## Changelog
 
 All versions are tested before they are published, including installation of
 Office in a virtual environment.
+
+### 2022.12.22
+
+- Re-imagined build wizard.
+- Office builds are now created in their own directories instead of a catch-all
+build directory.
+- Added several new ODT config files: Home retail, Enterprise, and options for
+just Outlook.
+- Rudimentary implementation for custom ODT config files.
+- New "run" and "debug" batch scripts to make launching/testing the PowerShell
+script easier.
+- Code cleanup, bug squashing, and more. Check out the full changelog below.
 
 ### 2022.10.06
 
