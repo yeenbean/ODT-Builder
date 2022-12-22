@@ -34,7 +34,7 @@ function Show-Menu
             Write-Host "║ 4. Outlook (business standard/premium)                         ║"
             Write-Host "║ 5. Outlook (E3/E5)                                             ║"
             Write-Host "╟────────────────────────────────────────────────────────────────╢"
-            Write-Host "║ 6. Custom (place in lib/custom.xml)                            ║"
+            Write-Host "║ 6. Custom (place in lib/custom-x64.xml)                        ║"
             Write-Host "║ 7. Cleanup                                                     ║"
             Write-Host "╚════════════════════════════════════════════════════════════════╝"
             Write-Host
@@ -174,9 +174,21 @@ function New-Build
             $version = "outlookenterprise"
         }
         '6' {
-            Write-Host "Feature not yet implemented."
-            Write-Host "Press enter to continue..."
-            Read-Host ""
+            # half-baked implementation sorry
+            $version = "custom"
+            $bits = 64
+            Show-Menu -menu install
+            switch (Read-Host) {
+                '1' {
+                    $install = $true
+                }
+                '2' {
+                    $install = $false
+                }
+                Default {Continue top}
+            }
+            if ($install) {New-Build -version $version -bits $bits -install}
+            else {New-Build -version $version -bits $bits}
             Continue top
         }
         '7' {

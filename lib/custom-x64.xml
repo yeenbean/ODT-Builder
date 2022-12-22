@@ -1,0 +1,10 @@
+<!-- Replace the contents of this file with your custom config. -->
+<!-- Create an Office config with https://config.office.com -->
+<!-- DO NOT CHANGE THE NAME OF THIS FILE! -->
+<Configuration>
+  <Add OfficeClientEdition="64">
+    <Product ID="O365BusinessRetail">
+      <Language ID="en-us" />
+    </Product>
+  </Add>  
+</Configuration>
