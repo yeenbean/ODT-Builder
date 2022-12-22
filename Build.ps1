@@ -175,20 +175,27 @@ function New-Build
         }
         '6' {
             # half-baked implementation sorry
+            Write-Debug "Custom script selected."
             $version = "custom"
+            Write-Debug "Custom script selected."
             $bits = 64
+            Write-Debug "64-bits selected."
             Show-Menu -menu install
+            Write-Debug "Menu presented."
             switch (Read-Host) {
                 '1' {
                     $install = $true
+                    Write-Debug "Install set to true."
                 }
                 '2' {
                     $install = $false
+                    Write-Debug "Install set to false."
                 }
                 Default {Continue top}
             }
             if ($install) {New-Build -version $version -bits $bits -install}
             else {New-Build -version $version -bits $bits}
+            Write-Debug "Install finished."
             Continue top
         }
         '7' {
